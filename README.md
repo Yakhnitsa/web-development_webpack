@@ -182,7 +182,7 @@
       ]
     }
     
-   ## Запускаем девелоперский сервер.
+## Запускаем девелоперский сервер.
    Для того, чтобы не разделять код на код для запуска сервера и код для запуска девелоперского режима
    можно запустить сервер в девелоперском режиме.
 
@@ -218,7 +218,6 @@
             new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
             new HtmlWebpackPlugin({
                 title: 'Development',
-                
             }),
         ],
         module: {
@@ -241,6 +240,81 @@
   - производим изменения в package.json, изменяем скрипт запуска
   `"start": "webpack-dev-server --open"` - запуск девелоперского сервера и открытие его в браузере
   - меняем index.html, теперь следует удалить импорт скриптов js, webpack добавит их сам.
-  - на данном этапе webpack.dev.js больше не нужен, его можно удалить и собирать приложение командой `npm run build`
+  - на данном этапе webpack.dev.js больше не нужен, его можно удалить 
+  и собирать приложение командой `npm run build`
+  
+## Добавляем Vue.js к приложению
+   - Устанавливаем vue.js и vue-loader для работы с однофайловыми компонентами
+   [гайд](https://vue-loader.vuejs.org/ru/guide/#vue-cli)
+   `npm install vue`
+   `npm install -D vue-loader vue-template-compiler`
+   `npm install -D vue-style-loader css-loader`
+   - Добавляем плагин в webpack.config.js
+   
+    const VueLoaderPlugin = require('vue-loader/lib/plugin')
+    ...
+    module.exports = {
+      module: {
+        rules: [
+          // ... другие правила
+          {
+            test: /\.vue$/,
+            loader: 'vue-loader'
+          }
+        ]
+      },
+      {
+              test: /\.css$/,
+              use: [
+                'vue-style-loader',
+                'css-loader'
+              ]
+      }
+      plugins: [
+        // убедитесь что подключили плагин!
+        new VueLoaderPlugin()
+      ]
+    }
+   - Создаем простой компонент src/pages/Main.vue
+   - Добавляем элемент на главную страницу:
+   в файле index.html добавляем элемент
+    `<div id="vue-app"></div>`
+   в файле index.js добавляем прорисовку созданного элемента 
+   
+    import Vue from 'vue'
+    import Main from './pages/Main.vue'
+    
+    new Vue({
+        el:'#vue-app',
+        render: a => a(Main)
+    
+    });
+   
+  
+  ## Protuction приложения
+  ### Настройка конфигурации
+  - устанавливаем плагин для сборки файлов конфигурации:
+  `npm install --save-dev webpack-merge`
+  - Разделяем конфигурацию на 3 файла:
+  `webpack.common.js` - общие настройки конфигурации
+  - включаем все лоадеры и правила обработки файлов
+  `webpack.dev.js` - конфигурация для девелоперского режима 
+  `webpack.prod.js` - конфигурация для продакшена
+  ### Насройка запуска и сборки
+  - Меняем package.json, прописываем сборку и запуск девелоперского режима:
+
+        
+          "scripts": {
+          ...
+            "start": "webpack-dev-server --open --config webpack.dev.js",
+            "build": "webpack --config webpack.prod.js"
+          },
+  
+  - Добавляем в index.js уведомление о девелоперском режиме
+  
+    
+    + if (process.env.NODE_ENV !== 'production') {
+    +   console.log('Looks like we are in development mode!');
+    + }  
 
 

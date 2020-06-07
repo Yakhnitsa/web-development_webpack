@@ -1,29 +1,19 @@
-const path = require('path');
+const merge = require('webpack-merge');
+const common = require('./webpack.common.js');
 
-module.exports = {
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
+
+module.exports = merge(common, {
     mode:'development',
     devtool: 'inline-source-map',
-    entry: {
-        main: './src/index.js',
-        secondary: './src/secondary.js'
+    devServer: {
+        contentBase: './dist',
+        port: 8080,
+        allowedHosts: [
+            'localhost:8080'
+        ],
+        // stats: 'errors-only',
+        // clientLogLevel: 'error'
     },
-    output: {
-        filename: '[name].js',
-        path: path.resolve(__dirname, 'dist'),
-    },
-    module: {
-        rules: [
-            {
-                test: /\.m?js$/,
-                exclude: /(node_modules|bower_components)/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-env'],
-                        plugins: ['@babel/plugin-proposal-object-rest-spread']
-                    }
-                }
-            }
-        ]
-    }
-};
+
+})

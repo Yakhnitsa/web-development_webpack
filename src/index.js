@@ -18,3 +18,19 @@ const hello = name => console.log(`hello ${name}`)
 hello('Everyone')
 hello('World')
 addButton()
+
+if (process.env.NODE_ENV !== 'production') {
+    console.log('Looks like we are in development mode!');
+}
+
+//Добавление vue.js
+import Vue from 'vue'
+import Main from './pages/Main.vue'
+
+const Foo = require('./pages/Main.vue').default
+
+new Vue({
+    el:'#vue-app',
+    render: a => a(Foo)
+
+});

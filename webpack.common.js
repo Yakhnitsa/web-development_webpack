@@ -10,14 +10,6 @@ module.exports = {
         main: './src/index.js',
         secondary: './src/secondary.js'
     },
-    output: {
-        filename: '[name].js',
-        path: path.resolve(__dirname, 'dist'),
-    },
-    devtool: 'inline-source-map',
-    devServer: {
-        contentBase: './dist',
-    },
     plugins: [
         new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
 
@@ -27,6 +19,10 @@ module.exports = {
         }),
         new VueLoaderPlugin(),
     ],
+    output: {
+        filename: '[name].js',
+        path: path.resolve(__dirname, 'dist'),
+    },
     module: {
         rules: [
             {
@@ -57,9 +53,4 @@ module.exports = {
         ]
     },
 
-    resolve: {
-        alias: {
-            'vue$': 'vue/dist/vue.esm.js' // 'vue/dist/vue.common.js' for webpack 1
-        }
-    }
 };
