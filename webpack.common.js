@@ -4,11 +4,16 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
+const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
+
 module.exports = {
-    mode:'development',
+    // mode:'development',
     entry: {
         main: './src/index.js',
-        secondary: './src/secondary.js'
+    },
+    output: {
+        filename: '[name].bungle.js',
+        path: path.resolve(__dirname, 'dist'),
     },
     plugins: [
         new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
@@ -18,11 +23,9 @@ module.exports = {
             template:'./index.html'
         }),
         new VueLoaderPlugin(),
+        new VuetifyLoaderPlugin()
     ],
-    output: {
-        filename: '[name].js',
-        path: path.resolve(__dirname, 'dist'),
-    },
+
     module: {
         rules: [
             {
@@ -57,11 +60,11 @@ module.exports = {
                     {
                         loader: 'sass-loader',
                         // Requires sass-loader@^7.0.0
-                        options: {
-                            implementation: require('sass'),
-                            fiber: require('fibers'),
-                            indentedSyntax: true // optional
-                        },
+                        // options: {
+                        //     implementation: require('sass'),
+                        //     fiber: require('fibers'),
+                        //     indentedSyntax: true // optional
+                        // },
                         // Requires sass-loader@^8.0.0
                         options: {
                             implementation: require('sass'),

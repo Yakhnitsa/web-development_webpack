@@ -435,6 +435,28 @@
     
     
 ## Оптимизация приложения
+## Проверка ресурсов
+   Используем [webpack-bundle-analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer)
+   
+## Урезаем аппетиты vuetify (https://vuetifyjs.com/ru/customization/a-la-carte/)
+
+   - Устанавливаем плагин оптимизации
+   `npm install vuetify-loader`   
+   - Меняем импорт в файле ./plugins/vuetify.js
+    
+    import Vue from 'vue'
+    import Vuetify from 'vuetify/lib'
+   - Устанавливаем плагин в webpack.common.js
+    
+    // webpack.common.js
+    
+    const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
+    
+    module.exports = {
+      plugins: [
+        new VuetifyLoaderPlugin()
+      ],
+    } 
 ### Ленивая загрузка
     [гайд]()       
 ### Предрендеринг страниц
