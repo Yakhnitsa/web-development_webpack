@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Main page</h1>
+        <h1>Test page</h1>
         <p>{{text}}</p>
     </div>
 
@@ -8,7 +8,7 @@
 
 <script>
     export default {
-        name: "Main",
+        name: "test-page",
         data: function(){
             return{
                 text:'component text'
@@ -21,6 +21,6 @@
 <style scoped>
     p{
         font-size: 2em;
-        text-align: center;
+        text-align: left;
     }
 </style>

@@ -9,7 +9,7 @@
      |- package.json
    + |- index.html
    + |- /src
-   +   |- index.js
+   +   |- router.js
  
   1.3. Производим изменения в package.json
   
@@ -18,7 +18,7 @@
             "version": "1.0.0",
             "description": "",
         +   "private": true, - Приватный доступ к файлам
-        -   "main": "index.js", - убираем файл main.js
+        -   "main": "router.js", - убираем файл main.js
             "scripts": {
               "test": "echo \"Error: no test specified\" && exit 1"
             },
@@ -40,12 +40,12 @@
         +   |- index.html
         - |- index.html
           |- /src
-            |- index.js
+            |- router.js
             
   1.5. Устанавливаем lodash и импортируем в приложение
   `npm install --save lodash`      
   
-    src/index.js:
+    src/router.js:
     + import _ from 'lodash';
     +
       function component() {
@@ -68,7 +68,7 @@
     -    <script src="https://unpkg.com/lodash@4.16.6"></script>
        </head>
        <body>
-    -    <script src="./src/index.js"></script>
+    -    <script src="./src/router.js"></script>
     +    <script src="main.js"></script>
        </body>
       </html>
@@ -84,7 +84,7 @@
         const path = require('path');
         
         module.exports = {
-            entry: './src/index.js', - точка входа в приложение
+            entry: './src/router.js', - точка входа в приложение
             output: {
                 filename: 'main.js', - конечный файл main.js
                 path: path.resolve(__dirname, 'dist'), - путь по которому собирается приложение
@@ -142,11 +142,11 @@
     "webpack-devmode": "webpack --config webpack.dev.js  -w" npm run webpack-devmode - запуск в девелоперском режиме.
     
   3.3. Создаем несколько точек входа в приложение (или разделяем проект на несколько файлов js)
-  Для наглядности копируем файл index.js в secondary.js и меняем некоторые строки.
+  Для наглядности копируем файл router.js в secondary.js и меняем некоторые строки.
   Меняем код webpack.dev.js, прописываем несколько точек входа:
   
         entry: {
-            main: './src/index.js',
+            main: './src/router.js',
             secondary: './src.secondary.js'
         },
         output: {
@@ -203,7 +203,7 @@
     module.exports = {
         mode:'development',
         entry: {
-            main: './src/index.js',
+            main: './src/router.js',
             secondary: './src/secondary.js'
         },
         output: {
@@ -279,7 +279,7 @@
    - Добавляем элемент на главную страницу:
    в файле index.html добавляем элемент
     `<div id="vue-app"></div>`
-   в файле index.js добавляем прорисовку созданного элемента 
+   в файле router.js добавляем прорисовку созданного элемента 
    
     import Vue from 'vue'
     import Main from './pages/Main.vue'
@@ -310,11 +310,132 @@
             "build": "webpack --config webpack.prod.js"
           },
   
-  - Добавляем в index.js уведомление о девелоперском режиме
+  - Добавляем в router.js уведомление о девелоперском режиме
   
     
     + if (process.env.NODE_ENV !== 'production') {
     +   console.log('Looks like we are in development mode!');
     + }  
 
+  Теперь сборка и запуск осуществляется скриптами:
+  `npm start` - запуск девелоперского сервера
+  `npm run build`  - сборка проекта
+  `npm run http-server` - запуск сервера и раздача контента
+  
+## Добавление роутера и создание нескольких страниц
+   ### Установка роутера и настройка приложения
+    `npm install vue-router'
+    
+   создаем файл router/router.js и настраиваем роутер 
+      
+      import Vue from 'vue'
+      import VueRouter from 'vue-router'
+      
+      import Main from '../pages/Main.vue'
+      import Error from '../pages/404.vue'
+      
+      Vue.use(VueRouter)
+      export default new VueRouter({
+          mode:'history',
+          routes:
+              [
+                  { path: '/', component: Main },
+                  { path: '*', component: Error }
+              ]
+      
+      })
 
+   - Создаем главную страницу приложения ./App.vue и прописываем ссылки на страницы
+   !!!ВАЖНО - роутер работает только по ссылкам router-link прямой переход по ссылке localhost/test ничего не даст
+   
+    App.vue:
+    <template>
+        <h1>Webpack development application</h1>
+                <router-link to="/">Перейти на главную</router-link>
+                <router-link to="/test">Перейти к Test</router-link>
+                <router-link to="/not-found">Перейти к Error page</router-link>
+        
+        <router-view></router-view> - здесь будет отображаться содержание маршрутов
+    </template>
+    
+    404.vue - копируем гугловскую
+    
+   - Добавляем роутер к приложению в файл router.js
+   
+    import App from './App.vue'
+    import router from './router' - в случаи если router находится не в файле router.js тогда путь прописываем полностью ./router/router
+    
+    new Vue({
+        router, //сокращенная запись для router:router
+        el:'#vue-app',
+        render: a => a(App)    
+    }); 
+## Добавление vuetify к приложению [guide](https://vuetifyjs.com/ru/getting-started/quick-start/)
+   - Установка приложения через npm
+   `npm install vuetify`
+   `npm install sass sass-loader fibers deepmerge -D`
+   - Добавляем правила в webpack.common.js
+   
+    // webpack.config.js
+    
+    module.exports = {
+      rules: [
+        {
+          test: /\.s(c|a)ss$/,
+          use: [
+            'vue-style-loader',
+            'css-loader',
+            {
+              loader: 'sass-loader',
+              // Requires sass-loader@^7.0.0
+              options: {
+                implementation: require('sass'),
+                fiber: require('fibers'),
+                indentedSyntax: true // optional
+              },
+              // Requires sass-loader@^8.0.0
+              options: {
+                implementation: require('sass'),
+                sassOptions: {
+                  fiber: require('fibers'),
+                  indentedSyntax: true // optional
+                },
+              },
+            },
+          ],
+        },
+      ],
+    }
+   - Создаем файл настройки //src/plugins/vuetify.js 
+    
+    // src/plugins/vuetify.js
+    
+    import Vue from 'vue'
+    import Vuetify from 'vuetify'
+    import 'vuetify/dist/vuetify.min.css'
+    
+    Vue.use(Vuetify)
+    
+    const opts = {}
+    
+    export default new Vuetify(opts)
+       
+   - Добавляем vuetify к index.js
+   
+    // src/main.js
+    
+    import Vue from 'vue'
+    import vuetify from '@/plugins/vuetify' // path to vuetify export
+    
+    new Vue({
+      vuetify,
+    }).$mount('#app')     
+    
+   - Добавляем элементы vuetify в приложение (https://vuetifyjs.com/ru/components/app-bars/)
+    
+    
+## Оптимизация приложения
+### Ленивая загрузка
+    [гайд]()       
+### Предрендеринг страниц
+    [гайд](https://github.com/chrisvfritz/prerender-spa-plugin)        

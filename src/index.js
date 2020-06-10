@@ -11,13 +11,13 @@
 //
 // document.body.appendChild(component());
 //Определяем простую функцию вывода на экран
-import {addButton} from "./module";
-
-const hello = name => console.log(`hello ${name}`)
-
-hello('Everyone')
-hello('World')
-addButton()
+// import {addButton} from "./module";
+//
+// const hello = name => console.log(`hello ${name}`)
+//
+// hello('Everyone')
+// hello('World')
+// addButton()
 
 if (process.env.NODE_ENV !== 'production') {
     console.log('Looks like we are in development mode!');
@@ -25,12 +25,18 @@ if (process.env.NODE_ENV !== 'production') {
 
 //Добавление vue.js
 import Vue from 'vue'
-import Main from './pages/Main.vue'
 
-const Foo = require('./pages/Main.vue').default
+import App from './App.vue';
+//
+import router from './router/router'
+// import router from './router'
+
+import vuetify from './plugins/vuetify' // path to vuetify export
 
 new Vue({
+    router, //сокращенная запись для router:router
+    vuetify,
     el:'#vue-app',
-    render: a => a(Foo)
-
-});
+    render: a => a(App)
+})
+    // .$mount('#vue-app')
