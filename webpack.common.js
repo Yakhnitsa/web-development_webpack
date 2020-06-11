@@ -25,6 +25,11 @@ module.exports = {
         new VueLoaderPlugin(),
         new VuetifyLoaderPlugin()
     ],
+    optimization: {
+        splitChunks: {
+            chunks: 'all'
+        }
+    },
 
     module: {
         rules: [

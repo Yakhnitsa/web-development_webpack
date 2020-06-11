@@ -1,9 +1,11 @@
+console.log("modules.js loading")
+
+if (process.env.NODE_ENV !== 'production') {
+    console.log('Looks like we are in development mode!');
+}
+
 import Vue from 'vue'
-import Vuetify from 'vuetify/lib'
-import 'vuetify/dist/vuetify.min.css'
+import App from './App.vue';//
+import router from './router/router'
+import vuetify from './plugins/vuetify' // path to vuetify export
 
-Vue.use(Vuetify)
-
-const opts = {}
-
-export default new Vuetify(opts)
