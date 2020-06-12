@@ -8,44 +8,31 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 
 module.exports = {
-    // mode:'development',
+    mode:'development',
+    devtool: 'inline-source-map',
+    devServer: {
+        contentBase: './dist',
+        port: 8082,
+    },
     entry: {
         main: './src/index.js',
     },
     output: {
         filename: '[name].bungle.js',
-        path: path.resolve(__dirname, 'dist'),
-        chunkFilename: '[name].bundle.js',
+        path: path.resolve(__dirname, 'dist')
     },
     plugins: [
         new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
-
+        new VueLoaderPlugin(),
         new HtmlWebpackPlugin({
             title: 'Development',
             template:'./index.html'
         }),
-        new VueLoaderPlugin(),
         new VuetifyLoaderPlugin()
     ],
     optimization: {
         splitChunks: {
-            cacheGroups: {
-                vuetifylib: {
-                    test: /[\\/]node_modules[\\/]vuetify[\\/]lib[\\/]/,
-                    name: 'vuetify-lib',
-                    chunks: 'all',
-                },
-                vuetifysrc: {
-                    test: /[\\/]node_modules[\\/]vuetify[\\/]src[\\/]/,
-                    name: 'vuetify-src',
-                    chunks: 'all',
-                },
-                vuelib: {
-                    test: /[\\/]node_modules[\\/]vue[\\/]/,
-                    name: 'vue-lib',
-                    chunks: 'all',
-                },
-            }
+            chunks: 'all',
 
         }
     },
@@ -83,13 +70,6 @@ module.exports = {
                     'css-loader',
                     {
                         loader: 'sass-loader',
-                        // Requires sass-loader@^7.0.0
-                        // options: {
-                        //     implementation: require('sass'),
-                        //     fiber: require('fibers'),
-                        //     indentedSyntax: true // optional
-                        // },
-                        // Requires sass-loader@^8.0.0
                         options: {
                             implementation: require('sass'),
                             sassOptions: {

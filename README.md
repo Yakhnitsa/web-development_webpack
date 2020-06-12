@@ -437,8 +437,52 @@
 ## Оптимизация приложения
 ## Проверка ресурсов
    Используем [webpack-bundle-analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer)
+   Установка: `npm install --save-dev webpack-bundle-analyzer`
+   Добавляем плагин в конфигурацию webpack:
    
-## Урезаем аппетиты vuetify (https://vuetifyjs.com/ru/customization/a-la-carte/)
+    const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+     
+    module.exports = {
+      plugins: [
+        new BundleAnalyzerPlugin()
+      ]
+    }
+   Теперь при запуске приложения по адресу localhost:8080 появится карта всех ваших ресурсов, и частей, из которых они состоят
+### Отделяем крупные импорты
+   Во время анализа станет известно, какие максимальные части кода содержит приложение с указанием их размера. 
+   В этом случаи есть смысл отделить эти части кода от основного файла сборки. 
+   Для этого необходимо настроить оптимизацию, а именно splitChunc
+   в webpack.common.js добавляем оптимизацию:
+   
+    module.exports = {
+    ...
+    optimization: {
+           splitChunks: {
+               cacheGroups: {
+                   //отделяет в отдельный файл содержимое node_modules/vuetify/lib
+                   vuetifylib: {
+                       test: /[\\/]node_modules[\\/]vuetify[\\/]lib[\\/]/,
+                       name: 'vuetifylib',
+                       chunks: 'all',
+                   },
+                   //отделяет в отдельный файл содержимое node_modules/vuetify/src
+                   vuetifysrc: {
+                       test: /[\\/]node_modules[\\/]vuetify[\\/]src[\\/]/,
+                       name: 'vuetifysrc',
+                       chunks: 'all',
+                   },
+                   //отделяет в отдельный файл содержимое node_modules/vue
+                   vuelib: {
+                       test: /[\\/]node_modules[\\/]vue[\\/]/,
+                       name: 'vuelib',
+                       chunks: 'all',
+                   },
+               }
+   
+           }
+       },
+   Теперь при сборке от основного файла main.bungle.js отделятся 2 файла vuetifylib.bungle.js и vuetifysrc.bungle.js
+### Урезаем аппетиты vuetify (https://vuetifyjs.com/ru/customization/a-la-carte/)
 
    - Устанавливаем плагин оптимизации
    `npm install vuetify-loader`   
@@ -457,7 +501,14 @@
         new VuetifyLoaderPlugin()
       ],
     } 
+    
+   
 ### Ленивая загрузка
-    [гайд]()       
+    [гайд](https://medium.com/@vladislavs.korehovs/optimizing-vue-vuetify-performance-async-loading-5e13ca43706e)
+   - один из способов разделить приложение на модули малой кровю это использовать ленивую загрузку компонентов
+   достаточно поменять импорт:
+    `import App from './App.vue';`
+     на `const App = () => import('./App.vue')`
+     теперь компонент App.vue загружается отдельным файлом     
 ### Предрендеринг страниц
     [гайд](https://github.com/chrisvfritz/prerender-spa-plugin)        

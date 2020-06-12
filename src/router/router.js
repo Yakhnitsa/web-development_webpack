@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import Main from '../pages/Main.vue'
-const Login = { template: '<div>please login</div>' }
 import Test from '../pages/Test.vue'
 import Error from '../pages/Error.vue'
 
